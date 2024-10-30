@@ -92,7 +92,7 @@ def main():
 
     st.title("🖼️ Chest X-ray Image Classifier by BGPastor")
     st.write("""
-    Upload an image, and the model will predict its class along with the confidence level.
+    Upload an image, and the model will asses if the patient has normal chest xray, pneumonia-viral or pneumonia-bacterial.
     """)
 
     # =====================================
@@ -100,7 +100,7 @@ def main():
     # =====================================
 
     st.markdown("### 📷 **Sample X-ray Images**")
-    st.write("Here are some examples of the types of X-ray images you can upload:")
+    st.write("Here are some examples of the types of X-ray images you must upload. They must be clear, flat and scanned. Pictures taken from phone (rotated/blrred) may not produce accurate result:")
 
     # List of sample image paths
     sample_image_paths = [
@@ -116,7 +116,7 @@ def main():
         with cols[i]:
             try:
                 img = Image.open(sample_image_paths[i]).convert("RGB")
-                st.image(img, width=150, caption=f"Sample {i+1}")
+                st.image(img, width=100, caption=f"Sample {i+1}")
             except Exception as e:
                 st.error(f"Error loading sample image {i+1}: {e}")
 
@@ -138,23 +138,16 @@ def main():
     # Create two columns for upload and camera input
     input_cols = st.columns([1, 1])
 
-    with input_cols[0]:
-        # File uploader for image
-        uploaded_file = st.file_uploader(
-            "📁 **Upload an image...**",
-            type=["jpg", "jpeg", "png", "bmp", "gif"],
-            accept_multiple_files=False
-        )
-
-    with input_cols[1]:
-        # Camera input for capturing image
-        captured_image = st.camera_input("📸 **Capture an image using your camera...**")
+    # File uploader for image
+    uploaded_file = st.file_uploader(
+        "📁 **Upload an image...**",
+        type=["jpg", "jpeg", "png", "bmp", "gif"],
+        accept_multiple_files=False
+    )
 
     # Determine which input to use: uploaded_file or captured_image
     if uploaded_file is not None:
         input_image = uploaded_file
-    elif captured_image is not None:
-        input_image = captured_image
     else:
         input_image = None
 
@@ -167,7 +160,7 @@ def main():
             st.image(image, caption='Uploaded Image', use_column_width=True)
 
             # Perform prediction
-            with st.spinner('🔍 Performing inference...'):
+            with st.spinner('🔍 Performing AI inference...'):
                 predicted_class, confidence = predict_image(model, image)
 
             # Display the results
